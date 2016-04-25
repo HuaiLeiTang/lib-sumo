@@ -7,12 +7,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.h 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: SUMOXMLDefinitions.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -61,6 +61,8 @@ enum SumoXMLTag {
     SUMO_TAG_POLY,
     /** begin/end of the description of a junction */
     SUMO_TAG_JUNCTION,
+    /** begin/end of the description of an edge restriction */
+    SUMO_TAG_RESTRICTION,
     /** an e1 detector */
     SUMO_TAG_E1DETECTOR,
     SUMO_TAG_INDUCTION_LOOP,
@@ -90,8 +92,14 @@ enum SumoXMLTag {
     SUMO_TAG_REROUTER,
     /// @brief A bus stop
     SUMO_TAG_BUS_STOP,
+    /// @brief A train stop (alias for bus stop)
+    SUMO_TAG_TRAIN_STOP,
+    /// @brief An access point for a train stop
+    SUMO_TAG_ACCESS,
     /// @brief A container stop
     SUMO_TAG_CONTAINER_STOP,
+    /// @brief A Charging Station
+    SUMO_TAG_CHARGING_STATION,	// PABLO #1916 (Renamed all references of SUMO_TAG_CHRG_STN)
     /** a vtypeprobe detector */
     SUMO_TAG_VTYPEPROBE,
     /** a routeprobe detector */
@@ -195,7 +203,6 @@ enum SumoXMLTag {
 
     SUMO_TAG_CF_KRAUSS,
     SUMO_TAG_CF_KRAUSS_PLUS_SLOPE,
-    SUMO_TAG_CF_KRAUSS_ACCEL_BOUND,
     SUMO_TAG_CF_KRAUSS_ORIG1,
     SUMO_TAG_CF_SMART_SK,
     SUMO_TAG_CF_DANIEL1,
@@ -206,6 +213,7 @@ enum SumoXMLTag {
     SUMO_TAG_CF_WIEDEMANN,
 
     SUMO_TAG_PERSON,
+    SUMO_TAG_PERSONTRIP,
     SUMO_TAG_RIDE,
     SUMO_TAG_WALK,
 
@@ -278,6 +286,7 @@ enum SumoXMLAttr {
     SUMO_ATTR_ONEWAY,
     SUMO_ATTR_WIDTH,
     SUMO_ATTR_SIDEWALKWIDTH,
+    SUMO_ATTR_BIKELANEWIDTH,
     SUMO_ATTR_REMOVE,
     SUMO_ATTR_LENGTH,
     SUMO_ATTR_X,
@@ -319,9 +328,15 @@ enum SumoXMLAttr {
     SUMO_ATTR_SPEEDFACTOR,
     SUMO_ATTR_SPEEDDEV,
     SUMO_ATTR_LANE_CHANGE_MODEL,
+    SUMO_ATTR_CAR_FOLLOW_MODEL,
     SUMO_ATTR_MINGAP,
     SUMO_ATTR_BOARDING_DURATION,
     SUMO_ATTR_LOADING_DURATION,
+    /* Charging Station */
+    SUMO_ATTR_CHARGINGPOWER,    // charge in W of the Charging Stations
+    SUMO_ATTR_EFFICIENCY,       // Eficiency of the charge inCharging Stations
+    SUMO_ATTR_CHARGEINTRANSIT,  // Allow/disallow charge in transit in Charging Stations
+    SUMO_ATTR_CHARGEDELAY,      // Delay in the charge of charging stations
     /* Car following model attributes */
     SUMO_ATTR_SIGMA,    // used by: Krauss
     SUMO_ATTR_TAU,      // Krauss
@@ -350,6 +365,7 @@ enum SumoXMLAttr {
     SUMO_ATTR_CONTAINER_CAPACITY,
     SUMO_ATTR_PERSON_NUMBER,
     SUMO_ATTR_CONTAINER_NUMBER,
+    SUMO_ATTR_MODES,
     /* source definitions */
     SUMO_ATTR_FUNCTION,
     SUMO_ATTR_POSITION,
@@ -381,6 +397,8 @@ enum SumoXMLAttr {
     SUMO_ATTR_SPREADTYPE,
     /// The turning radius at an intersection in m
     SUMO_ATTR_RADIUS,
+    /// Whether vehicles must keep the junction clear
+    SUMO_ATTR_KEEP_CLEAR,
     /// whether a given shape is user-defined
     SUMO_ATTR_CUSTOMSHAPE,
     /// A color information
@@ -414,6 +432,7 @@ enum SumoXMLAttr {
     // Attributes for detectors
     /// Information whether the detector shall be continued on the folowing lanes
     SUMO_ATTR_CONT,
+    SUMO_ATTR_CONTPOS,
     SUMO_ATTR_HALTING_TIME_THRESHOLD,
     SUMO_ATTR_HALTING_SPEED_THRESHOLD,
     SUMO_ATTR_JAM_DIST_THRESHOLD,
@@ -496,6 +515,9 @@ enum SumoXMLAttr {
     SUMO_ATTR_ACTTYPE,
     SUMO_ATTR_SLOPE,
     SUMO_ATTR_VERSION,
+    SUMO_ATTR_CORNERDETAIL,
+    SUMO_ATTR_LINKDETAIL,
+    SUMO_ATTR_LEFTHAND,
     SUMO_ATTR_COMMAND,
 
     SUMO_ATTR_ACTORCONFIG,
@@ -568,8 +590,10 @@ enum SumoXMLAttr {
     /* first coordinate of edge shape */
     GNE_ATTR_SHAPE_START,
     /* last coordinate of edge shape */
-    GNE_ATTR_SHAPE_END
+    GNE_ATTR_SHAPE_END,
     //@}
+
+    SUMO_ATTR_TARGETLANE
 };
 
 /*
@@ -587,11 +611,14 @@ enum SumoXMLNodeType {
     NODETYPE_UNKNOWN, // terminator
     NODETYPE_TRAFFIC_LIGHT,
     NODETYPE_TRAFFIC_LIGHT_NOJUNCTION, // junction controlled only by traffic light but without other prohibitions,
+    NODETYPE_TRAFFIC_LIGHT_RIGHT_ON_RED,
     NODETYPE_RAIL_SIGNAL,
+    NODETYPE_RAIL_CROSSING,
     NODETYPE_PRIORITY,
     NODETYPE_PRIORITY_STOP, // like priority but all minor links have stop signs
     NODETYPE_RIGHT_BEFORE_LEFT,
     NODETYPE_ALLWAY_STOP,
+    NODETYPE_ZIPPER,
     NODETYPE_DISTRICT,
     NODETYPE_NOJUNCTION,
     NODETYPE_INTERNAL,
@@ -669,6 +696,8 @@ enum LinkState {
     LINKSTATE_STOP = 's',
     /// @brief This is an uncontrolled, all-way stop link.
     LINKSTATE_ALLWAY_STOP = 'w',
+    /// @brief This is an uncontrolled, zipper-merge link
+    LINKSTATE_ZIPPER = 'Z',
     /// @brief This is a dead end link
     LINKSTATE_DEADEND = '-'
 };
@@ -685,6 +714,8 @@ enum LinkDirection {
     LINKDIR_STRAIGHT = 0,
     /// The link is a 180 degree turn
     LINKDIR_TURN,
+    /// The link is a 180 degree turn (left-hand network)
+    LINKDIR_TURN_LEFTHAND,
     /// The link is a (hard) left direction
     LINKDIR_LEFT,
     /// The link is a (hard) right direction
@@ -704,7 +735,15 @@ enum LinkDirection {
 enum TrafficLightType {
     TLTYPE_STATIC,
     TLTYPE_RAIL,
-    TLTYPE_ACTUATED
+    TLTYPE_ACTUATED,
+    TLTYPE_SOTL_PHASE,
+    TLTYPE_SOTL_PLATOON,
+    TLTYPE_SOTL_REQUEST,
+    TLTYPE_SOTL_WAVE,
+    TLTYPE_SOTL_MARCHING,
+    TLTYPE_SWARM_BASED,
+    TLTYPE_HILVL_DETERMINISTIC,
+    TLTYPE_INVALID //< must be the last one
 };
 
 
@@ -755,6 +794,8 @@ public:
     static StringBijection<TrafficLightType> TrafficLightTypes;
 
     static StringBijection<LaneChangeModel> LaneChangeModels;
+
+    static StringBijection<SumoXMLTag> CarFollowModels;
     //@}
 
     /// @name Helper functions for ID-string manipulations
@@ -783,6 +824,8 @@ private:
     static StringBijection<TrafficLightType>::Entry trafficLightTypesVales[];
 
     static StringBijection<LaneChangeModel>::Entry laneChangeModelValues[];
+
+    static StringBijection<SumoXMLTag>::Entry carFollowModelValues[];
 
 };
 

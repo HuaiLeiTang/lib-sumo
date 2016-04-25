@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: SUMOTime.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: SUMOTime.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Variables, methods, and tools for internal time representation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -32,7 +32,7 @@
 #include <config.h>
 #endif
 
-#include <climits>
+#include <limits>
 #include <string>
 #include "UtilExceptions.h"
 
@@ -40,34 +40,10 @@
 // ===========================================================================
 // type definitions
 // ===========================================================================
-typedef int SUMOTime;
-#define SUMOTime_MAX INT_MAX
-#define SUMOTime_MIN INT_MIN
-#define SUMOTIME_MAXSTRING "2147483" // INT_MAX / 1000
-
-#ifndef HAVE_SUBSECOND_TIMESTEPS
-// the step length in s
-#define DELTA_T 1
-
-#define TS (static_cast<SUMOReal>(1.))
-
-// x*deltaT
-#define SPEED2DIST(x) (x)
-// x/deltaT
-#define DIST2SPEED(x) (x)
-// x*deltaT*deltaT
-#define ACCEL2DIST(x) (x)
-// x*deltaT
-#define ACCEL2SPEED(x) (x)
-// x/deltaT
-#define SPEED2ACCEL(x) (x)
-
-#define STEPS2TIME(x) (static_cast<SUMOReal>(x))
-#define TIME2STEPS(x) (static_cast<SUMOTime>(x))
-#define STEPFLOOR(x) (x)
-#define STEPS2MS(x) ((x)*1000)
-
-#else
+typedef long long int SUMOTime;
+#define SUMOTime_MAX std::numeric_limits<SUMOTime>::max()
+#define SUMOTime_MIN std::numeric_limits<SUMOTime>::min()
+#define SUMOTIME_MAXSTRING "9223372036854774" // SUMOTime_MAX / 1000 - 1 (because of rounding errors)
 
 // the step length in ms
 extern SUMOTime DELTA_T;
@@ -90,8 +66,6 @@ extern SUMOTime DELTA_T;
 #define TIME2STEPS(x) (static_cast<SUMOTime>((x)*1000))
 #define STEPFLOOR(x) (int(x/DELTA_T)*DELTA_T)
 #define STEPS2MS(x) (x)
-
-#endif
 
 #define SIMTIME STEPS2TIME(MSNet::getInstance()->getCurrentTimeStep())
 

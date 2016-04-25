@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsIO.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: OptionsIO.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Helper for parsing command line arguments and reading configuration files
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -53,11 +53,18 @@ class OptionsCont;
  */
 class OptionsIO {
 public:
-    /** @brief Parses the command line arguments and loads the configuration optionally
+    /** @brief Stores the command line arguments for later parsing
+     *
+     * @param[in] argc number of arguments given at the command line
+     * @param[in] argv arguments given at the command line
+     */
+    static void setArgs(int argc, char** argv);
+
+
+    /** @brief Parses the command line arguments and loads the configuration
      *
      * Command line arguments are parsed, first, throwing a ProcessError
-     *  if something fails. If loadConfig is false, the method returns
-     *  after this. Otherwise, options are reset to being writeable and the
+     *  if something fails. Then options are reset to being writeable and the
      *  configuration is loaded using "loadConfiguration". After this,
      *  the options are reset again and the command line arguments are
      *  reparsed.
@@ -65,13 +72,8 @@ public:
      * This workflow allows to read the name of a configuration file from
      *  command line arguments, first, then to load values from this configuration
      *  file and reset them by other values from the command line.
-     *
-     * @param[in] loadConfig Whether the configuration shall be loaded
-     * @param[in] argc number of arguments given at the command line
-     * @param[in] argv arguments given at the command line
      */
-    static void getOptions(bool loadConfig,
-                           int argc = 0, char** argv = 0);
+    static void getOptions();
 
 
     /** @brief Loads and parses the configuration
@@ -81,6 +83,16 @@ public:
      *  the name of the configuration).
      */
     static void loadConfiguration();
+
+
+private:
+    /** @brief Retrieves the XML root element of a supposed configuration or net
+     *
+     * @param[in] filename the XML file to parse
+     * @return the root element if any
+     */
+    static std::string getRoot(const std::string& filename);
+
 
 private:
     static int myArgC;

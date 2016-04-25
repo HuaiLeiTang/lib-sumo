@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleClass.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: SUMOVehicleClass.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Definitions of SUMO vehicle classes and helper functions
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -38,6 +38,7 @@
 #include <utils/common/ToString.h>
 #include <utils/common/MsgHandler.h>
 #include <utils/common/StringTokenizer.h>
+#include <utils/iodevices/OutputDevice.h>
 
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -125,6 +126,7 @@ StringBijection<SUMOVehicleShape>::Entry sumoVehicleShapeStringInitializer[] = {
     {"evehicle",              SVS_E_VEHICLE},
     {"ant",                   SVS_ANT},
     {"ship",                  SVS_SHIP},
+    {"emergency",             SVS_EMERGENCY},
     {"",                      SVS_UNKNOWN}
 };
 
@@ -146,23 +148,6 @@ const SVCPermissions SVC_UNSPECIFIED = -1;
 // method definitions
 // ===========================================================================
 // ------------ Conversion of SUMOVehicleClass
-
-std::string
-getVehicleClassCompoundName(int id) {
-    std::string ret;
-    const std::vector<std::string> names = SumoVehicleClassStrings.getStrings();
-    for (std::vector<std::string>::const_iterator it = names.begin(); it != names.end(); it++) {
-        if ((id & SumoVehicleClassStrings.get(*it))) {
-            ret += ("|" + *it);
-        }
-    }
-    if (ret.length() > 0) {
-        return ret.substr(1);
-    } else {
-        return ret;
-    }
-}
-
 
 std::string
 getVehicleClassNames(SVCPermissions permissions) {
@@ -271,6 +256,39 @@ parseVehicleClasses(const std::vector<std::string>& allowedS) {
         result |= getVehicleClassID(*i);
     }
     return result;
+}
+
+
+void
+writePermissions(OutputDevice& into, SVCPermissions permissions) {
+    if (permissions == SVCAll) {
+        return;
+    } else if (permissions == 0) {
+        into.writeAttr(SUMO_ATTR_DISALLOW, "all");
+        return;
+    } else {
+        size_t num_allowed = 0;
+        for (int mask = 1; mask <= SUMOVehicleClass_MAX; mask = mask << 1) {
+            if ((mask & permissions) == mask) {
+                ++num_allowed;
+            }
+        }
+        if (num_allowed <= (SumoVehicleClassStrings.size() - num_allowed) && num_allowed > 0) {
+            into.writeAttr(SUMO_ATTR_ALLOW, getVehicleClassNames(permissions));
+        } else {
+            into.writeAttr(SUMO_ATTR_DISALLOW, getVehicleClassNames(~permissions));
+        }
+    }
+}
+
+
+void
+writePreferences(OutputDevice& into, SVCPermissions preferred) {
+    if (preferred == SVCAll || preferred == 0) {
+        return;
+    } else {
+        into.writeAttr(SUMO_ATTR_PREFER, getVehicleClassNames(preferred));
+    }
 }
 
 

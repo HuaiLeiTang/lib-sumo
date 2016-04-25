@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 29.05.2005
-/// @version $Id: SysUtils.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: SysUtils.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A few system-specific functions
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -73,9 +73,7 @@ SysUtils::getWindowsTicks() {
 
 unsigned long
 SysUtils::runHiddenCommand(const std::string& cmd) {
-#ifndef WIN32
-    return (unsigned long)system(cmd.c_str());
-#else
+#ifdef _MSC_VER
     // code inspired by http://www.codeproject.com/Articles/2537/Running-console-applications-silently
     STARTUPINFO StartupInfo;
     PROCESS_INFORMATION ProcessInfo;
@@ -107,6 +105,8 @@ SysUtils::runHiddenCommand(const std::string& cmd) {
 
     delete args;
     return rc;
+#else
+    return (unsigned long)system(cmd.c_str());
 #endif
 }
 

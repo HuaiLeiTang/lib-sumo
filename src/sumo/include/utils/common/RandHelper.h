@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: RandHelper.h 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: RandHelper.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -85,6 +85,16 @@ public:
 
     /// @brief Returns a random integer in [minV, maxV-1]
     static inline int rand(int minV, int maxV) {
+        return minV + rand(maxV - minV);
+    }
+
+    /// @brief Returns a random 64 bit integer in [0, maxV-1]
+    static inline long long int rand(long long int maxV) {
+        return (long long int) RandHelper::myRandomNumberGenerator.randInt64((unsigned long long int)(maxV - 1));
+    }
+
+    /// @brief Returns a random 64 bit integer in [minV, maxV-1]
+    static inline long long int rand(long long int minV, long long int maxV) {
         return minV + rand(maxV - minV);
     }
 

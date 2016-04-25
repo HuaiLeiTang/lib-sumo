@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Tue, 17 Jun 2003
-/// @version $Id: MsgHandler.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MsgHandler.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Retrieves messages about the process and gives them further to output
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -201,6 +201,7 @@ private:
 #define WRITE_MESSAGE(msg) MsgHandler::getMessageInstance()->inform(msg);
 #define PROGRESS_BEGIN_MESSAGE(msg) MsgHandler::getMessageInstance()->beginProcessMsg((msg) + std::string("..."));
 #define PROGRESS_DONE_MESSAGE() MsgHandler::getMessageInstance()->endProcessMsg("done.");
+#define PROGRESS_TIME_MESSAGE(before) MsgHandler::getMessageInstance()->endProcessMsg("done (" + toString(SysUtils::getCurrentMillis() - before) + "ms).");
 #define PROGRESS_FAILED_MESSAGE() MsgHandler::getMessageInstance()->endProcessMsg("failed.");
 #define WRITE_ERROR(msg)   MsgHandler::getErrorInstance()->inform(msg);
 

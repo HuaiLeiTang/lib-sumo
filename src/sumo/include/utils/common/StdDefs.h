@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: StdDefs.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: StdDefs.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -38,6 +38,9 @@
 /* avoiding compiler warning unreferenced parameter */
 #define UNUSED_PARAMETER(x)  ((void)(x))
 
+/// @brief the maximum number of connections across an intersection
+#define  SUMO_MAX_CONNECTIONS 256
+
 class RGBColor;
 
 /* -------------------------------------------------------------------------
@@ -57,8 +60,6 @@ const SUMOReal SUMO_const_haltingSpeed = (SUMOReal) 0.1;
  */
 const RGBColor& getLinkColor(const LinkState& ls);
 
-/// @brief attach some build flags to the version string
-const std::string getBuildName(const std::string& version);
 
 /* -------------------------------------------------------------------------
  * templates for mathematical functions missing in some c++-implementations
@@ -114,6 +115,8 @@ ISNAN(T a) {
 /// @brief global utility flags for debugging
 extern bool gDebugFlag1;
 extern bool gDebugFlag2;
+
+extern std::string gDebugSelectedVehicle;
 
 #endif
 

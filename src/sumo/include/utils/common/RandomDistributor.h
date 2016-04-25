@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2005-09-15
-/// @version $Id: RandomDistributor.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: RandomDistributor.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Represents a generic random distribution
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -60,8 +60,8 @@ public:
      *   older entrys will be removed when adding more than the maximumSize
      */
     RandomDistributor() :
-        myProb(0)
-    {}
+        myProb(0) {
+    }
 
     /// @brief Destructor
     ~RandomDistributor() { }

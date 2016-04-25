@@ -4,12 +4,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    unknown
-/// @version $Id: StringUtils.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: StringUtils.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Some static methods for string processing
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -176,6 +176,74 @@ StringUtils::escapeXML(const std::string& orig) {
 }
 
 
+std::string
+StringUtils::urlEncode(const std::string& toEncode, const std::string encodeWhich) {
+    std::ostringstream out;
+
+    for (std::string::size_type i = 0; i < toEncode.length(); ++i) {
+        const char t = toEncode.at(i);
+
+        if ((encodeWhich != "" && encodeWhich.find(t) == std::string::npos) ||
+                (encodeWhich == "" &&
+                 ((t >= 45 && t <= 57) ||       // hyphen, period, slash, 0-9
+                  (t >= 65 && t <= 90) ||        // A-Z
+                  t == 95 ||                     // underscore
+                  (t >= 97 && t <= 122) ||       // a-z
+                  t == 126))                     // tilde
+           ) {
+            out << toEncode.at(i);
+        } else {
+            out << charToHex(toEncode.at(i));
+        }
+    }
+
+    return out.str();
+}
+
+std::string
+StringUtils::urlDecode(const std::string& toDecode) {
+    std::ostringstream out;
+
+    for (std::string::size_type i = 0; i < toDecode.length(); ++i) {
+        if (toDecode.at(i) == '%') {
+            std::string str(toDecode.substr(i + 1, 2));
+            out << hexToChar(str);
+            i += 2;
+        } else {
+            out << toDecode.at(i);
+        }
+    }
+
+    return out.str();
+}
+
+std::string
+StringUtils::charToHex(unsigned char c) {
+    short i = c;
+
+    std::stringstream s;
+
+    s << "%" << std::setw(2) << std::setfill('0') << std::hex << i;
+
+    return s.str();
+}
+
+unsigned char
+StringUtils::hexToChar(const std::string& str) {
+    short c = 0;
+
+    if (!str.empty()) {
+        std::istringstream in(str);
+
+        in >> std::hex >> c;
+
+        if (in.fail()) {
+            throw std::runtime_error("stream decode failure");
+        }
+    }
+
+    return static_cast<unsigned char>(c);
+}
+
 
 /****************************************************************************/
-

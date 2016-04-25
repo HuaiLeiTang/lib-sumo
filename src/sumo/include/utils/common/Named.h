@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: Named.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: Named.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Base class for objects which have an id.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -53,6 +53,11 @@ public:
     /// @brief Destructor
     virtual ~Named() { }
 
+    /// @brief get an identifier for Named-like object which may be Null
+    template<class T>
+    static std::string getIDSecure(const T* obj, const std::string& fallBack = "NULL") {
+        return obj == 0 ? fallBack : obj->getID();
+    }
 
     /** @brief Returns the id
      * @return The stored id

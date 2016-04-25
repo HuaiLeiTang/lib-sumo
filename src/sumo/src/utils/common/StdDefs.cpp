@@ -4,11 +4,11 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2014-01-07
-/// @version $Id: StdDefs.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: StdDefs.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -47,6 +47,7 @@ const RGBColor SUMO_color_MINOR(51, 51, 51);
 const RGBColor SUMO_color_EQUAL(128, 128, 128);
 const RGBColor SUMO_color_STOP(128, 0, 128);
 const RGBColor SUMO_color_ALLWAY_STOP(0, 0, 192);
+const RGBColor SUMO_color_ZIPPER(192, 128, 64);
 const RGBColor SUMO_color_DEADEND(0, 0, 0);
 
 const RGBColor& getLinkColor(const LinkState& ls) {
@@ -77,6 +78,8 @@ const RGBColor& getLinkColor(const LinkState& ls) {
             return SUMO_color_STOP;
         case LINKSTATE_ALLWAY_STOP:
             return SUMO_color_ALLWAY_STOP;
+        case LINKSTATE_ZIPPER:
+            return SUMO_color_ZIPPER;
         case LINKSTATE_DEADEND:
             return SUMO_color_DEADEND;
         default:
@@ -85,19 +88,9 @@ const RGBColor& getLinkColor(const LinkState& ls) {
 }
 
 
-const std::string getBuildName(const std::string& version) {
-    std::string result = version;
-#ifdef HAVE_INTERNAL
-    result += "I";
-#endif
-#ifdef _DEBUG
-    result += "D";
-#endif
-    return result;
-}
-
 bool gDebugFlag1 = false;
 bool gDebugFlag2 = false;
+std::string gDebugSelectedVehicle = "";
 
 /****************************************************************************/
 

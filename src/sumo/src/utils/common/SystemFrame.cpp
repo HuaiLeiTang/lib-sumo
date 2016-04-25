@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 23.06.2003
-/// @version $Id: SystemFrame.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: SystemFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A set of actions common to all applications
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -53,6 +53,7 @@ SystemFrame::addConfigurationOptions(OptionsCont& oc) {
     oc.doRegister("configuration-file", 'c', new Option_FileName());
     oc.addSynonyme("configuration-file", "configuration");
     oc.addDescription("configuration-file", "Configuration", "Loads the named config on startup");
+    oc.addXMLDefault("configuration-file");
 
     oc.doRegister("save-configuration", new Option_FileName());
     oc.addSynonyme("save-config", "save-configuration");
@@ -106,7 +107,7 @@ SystemFrame::addReportOptions(OptionsCont& oc) {
     oc.doRegister("error-log", new Option_FileName());
     oc.addDescription("error-log", "Report", "Writes all warnings and errors to FILE");
 
-    oc.doRegister("output-prefix", new Option_FileName());//!!! check, describe
+    oc.doRegister("output-prefix", new Option_String());
     oc.addDescription("output-prefix", "Output", "Prefix which is applied to all output files. The special string 'TIME' is replaced by the current time.");
 }
 

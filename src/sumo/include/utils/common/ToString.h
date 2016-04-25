@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 23 Sep 2002
-/// @version $Id: ToString.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: ToString.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -39,6 +39,7 @@
 #include <algorithm>
 #include <utils/xml/SUMOXMLDefinitions.h>
 #include <utils/common/SUMOVehicleClass.h>
+#include <utils/common/Named.h>
 #include "StdDefs.h"
 
 
@@ -149,7 +150,7 @@ inline std::string toString(const typename std::vector<V*>::const_iterator& b, c
         if (it != b) {
             oss << " ";
         }
-        oss << (*it)->getID();
+        oss << Named::getIDSecure(*it);
     }
     return oss.str();
 }
@@ -192,6 +193,12 @@ inline std::string toString(const std::set<V*>& v, std::streamsize accuracy = OU
 
 template <>
 inline std::string toString(const std::vector<int>& v, std::streamsize accuracy) {
+    return joinToString(v, " ", accuracy);
+}
+
+
+template <>
+inline std::string toString(const std::vector<long long int>& v, std::streamsize accuracy) {
     return joinToString(v, " ", accuracy);
 }
 
